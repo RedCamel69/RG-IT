@@ -1,4 +1,13 @@
-﻿export function ScrollToTop() {
+﻿
+
+window.triggerFileDownload = (fileName, url) => {
+    const anchorElement = document.createElement('a');
+    anchorElement.href = url;
+    anchorElement.download = fileName ?? '';
+    anchorElement.click();
+    anchorElement.remove();
+}
+export function ScrollToTop() {
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 };

@@ -1,4 +1,6 @@
-﻿<section id="resume" class="resume">
+﻿@inject IJSRuntime JS
+
+<section id="resume" class="resume">
     <div class="container">
 
         <div class="section-title">
@@ -9,7 +11,7 @@
 
         <div class="row">
             <div class="col-lg-6">
-                <h3 class="resume-title">Sumary</h3>
+                <h3 class="resume-title">Summary</h3>
                 <div class="resume-item pb-0">
                     <h4>Jack Nicholson</h4>
                     <p><em>Sit sint consectetur velit quisquam cupiditate impedit suscipit alias. Sit sint consectetur velit quisquam cupiditate impedit suscipit alias.</em></p>
@@ -66,6 +68,24 @@
                 </div>
             </div>
         </div>
+
+
+
+        <button type="button" class="btn btn-primary" @onclick="DownloadFileFromURL"><i class="bi bi-download"></i> Download Resume</button>
+
     </div>
+
+
+   
 </section>
+
+
+@code {
+    private async Task DownloadFileFromURL()
+    {
+        var fileName = "quote.txt";
+        var fileURL = "/files/resume.txt";
+        await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
+    }
+}
 
