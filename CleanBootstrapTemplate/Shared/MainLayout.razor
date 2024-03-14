@@ -1,0 +1,74 @@
+﻿@using CleanBootstrapTemplate.Components
+@inherits LayoutComponentBase
+
+
+    <Header />
+
+
+
+
+@Body
+
+<!-- ======= Footer ======= -->
+<footer id="footer">
+    <div class="container">
+        <h4>Blazor Clean Template</h4>       
+    </div>
+    <div class="container" >       
+        <div class="row">
+            <div class="col-2" ><a href="#" aria-label="Go back to the landing page" >
+                    <a href="/" target="_blank" aria-label="Visit the youtube channel">
+                        <i class="bi bi-house display-3"></i>
+                    </a>
+            </a></div>
+            <div class="col-2" >
+                <a href="https://www.youtube.com/" target="_blank" aria-label="Visit the youtube channel" >
+                    <i class="bi bi-youtube display-3"></i>
+                </a>
+            </div>
+            <div class="col-2">
+                <a href="#" target="_blank" aria-label="Visit the facebook page">
+                    <i class="bi bi-facebook display-3"></i>
+                </a>
+            </div>
+            <div class="col"></div>
+            <div class="col-2" aria-label="Go back to the landing page" ><a href="#">
+                    <i class="bi bi-arrow-up-circle display-3"></i>
+                </a></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="copyright">
+            &copy; Copyright <strong><span>Clean Template</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+        </div>
+    </div>
+</footer><!-- End Footer -->
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? null : "navbar-mobile";
+
+    private string @CloseMenuCssClass => collapseNavMenu ? "d-none" : "d-flex";
+
+    private int counter;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void CloseNavMenu()
+    {
+        if (collapseNavMenu == false)
+            collapseNavMenu = true;
+    }
+
+
+    private void OnScroll()
+    {
+        counter++;
+    }
+
+}

@@ -1,0 +1,120 @@
+﻿@inject IJSRuntime JS
+@inject NavigationManager Navigation;
+
+
+<header id="header" class="fixed-top d-flex justify-content-center align-items-center @headerTransparentCss">
+    <nav id="navbar" class="navbar @NavMenuCssClass">
+        <ul @onclick="CloseNavMenu">
+            <li>
+                <!-- make home a standard a otherwise will match all page refreshes-->
+                @* <a href="/" Match="NavLinkMatch.All" @onclick="@(() => CloseNavMenu("home"))" class="@homeLinkCSS">Home</a> *@
+                <NavLink href="/" Match="NavLinkMatch.All" aria-label="Go back to the landing page">
+                    Home
+                </NavLink>
+            </li>
+           
+            <li>
+                <NavLink href="/#about" Match="NavLinkMatch.All" aria-label="Go to the about section">About</NavLink>
+            </li>
+
+            <li>
+                <NavLink href="/#resume" Match="NavLinkMatch.All" aria-label="Go to the resume section">Resume</NavLink>
+            </li>
+
+            <li>
+                <NavLink href="/#services" Match="NavLinkMatch.All" aria-label="Go to the services section">Services</NavLink>
+            </li>
+
+            <li>
+                <NavLink href="/#contact" Match="NavLinkMatch.All" aria-label="Go to the services section">Contact</NavLink>
+            </li>
+          
+           
+            <li class="dropdown">
+               @*  <NavLink href="/projects dropdown-toggle" Match="NavLinkMatch.All" role="button" data-bs-toggle="dropdown" aria-expanded="false">Projects</NavLink> *@
+                <a class="nav-link dropdown-toggle @projectsNavbarCss" href="/projects" id="navbarProjectsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Projects
+                </a>
+                <ul>
+                    <li><NavLink href="/projects" Match="NavLinkMatch.All">Overview</NavLink></li>
+                    <li><NavLink href="/projects/1" Match="NavLinkMatch.All">Project 1</NavLink></li>
+                    <li><NavLink href="/projects/2" Match="NavLinkMatch.All">Project 2</NavLink></li>
+                    <li><NavLink href="/projects/3" Match="NavLinkMatch.All">Project 3</NavLink></li>
+                    <li><NavLink href="/projects/4" Match="NavLinkMatch.All">Project 4</NavLink></li>
+                    <li><NavLink href="/projects/5" Match="NavLinkMatch.All">Project 5</NavLink></li>
+                    <li><NavLink href="/projects/6" Match="NavLinkMatch.All">Project 6</NavLink></li>
+                </ul>
+            </li>
+           
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle @mobileMenuTogglerCssClass" @onclick="ToggleNavMenu"></i>
+    </nav><!-- .navbar -->
+
+
+</header>
+
+
+<AnchorNavigation/>
+
+
+@code {
+    private IJSObjectReference? _jsModule;
+
+    private bool landingPage = true;
+    private bool projectsPage = false;
+
+    private string? headerTransparentCss => landingPage ? "header-transparent" : null;
+    private string? projectsNavbarCss => projectsPage ? "active" : null;
+
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? null : "navbar-mobile";
+
+    private string? NavMenuDropdownCssClass => collapseNavMenu ? null : "dropdown-active";
+    private string? mobileMenuTogglerCssClass => collapseNavMenu ? null : "bi-x";
+
+    private string @CloseMenuCssClass => collapseNavMenu ? "d-none" : "d-flex";
+
+    protected override async Task OnInitializedAsync()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
+        Navigation.LocationChanged += OnLocationChanged;
+
+        landingPage = (Navigation.Uri == Navigation.BaseUri);
+
+        _jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "../js/main.js");
+
+        if (_jsModule != null)
+        {
+            AttachScrollListener();
+        }
+    }
+
+    private async void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+
+        landingPage = e.Location.Contains("home") || e.Location.Contains("#") || (Navigation.Uri == Navigation.BaseUri);
+
+        projectsPage = e.Location.Contains("projects");
+
+        StateHasChanged();
+    }
+
+    async Task AttachScrollListener()
+    {
+        //selfReference = DotNetObjectReference.Create(this);
+        var minInterval = 500; // Only notify every 500 ms
+        await _jsModule.InvokeVoidAsync("onScroll", minInterval);
+    }
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void CloseNavMenu()
+    {
+        if (collapseNavMenu == false)
+            collapseNavMenu = true;
+    }
+}
